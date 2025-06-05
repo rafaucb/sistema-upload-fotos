@@ -29,7 +29,9 @@ export default function Slideshow() {
         .from("fotos-arraia")
         .list("", {
           limit: 1000,
-          sortBy: { column: "created_at", order: "asc" },
+          sortBy: { column: "created_at", order: "desc" }
+,
+          
         });
 
       if (error) {
@@ -47,7 +49,8 @@ export default function Slideshow() {
       if (houveMudanca) {
         nomesAnteriores.current = novosNomes;
         setFotos(data);
-        setIndiceAtual(data.length > nomesAntigos.length ? data.length - 1 : 0);
+        setIndiceAtual(0);
+
       }
     }
 
