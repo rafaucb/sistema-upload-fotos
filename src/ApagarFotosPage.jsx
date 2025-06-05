@@ -57,8 +57,17 @@ export default function ApagarFotosPage() {
       alert("❌ Erro ao apagar: " + error.message);
     } else {
       alert("✅ Fotos apagadas!");
-      setFotos(fotos.filter((f) => !selecionadas.includes(f.name)));
+      
       setSelecionadas([]);
+      // Atualiza lista de fotos após deletar
+const { data: novasFotos } = await supabase.storage
+  .from("fotos-arraia")
+  .list("", {
+    limit: 1000,
+    sortBy: { column: "created_at", order: "desc" },
+  });
+setFotos(novasFotos || []);
+
     }
   }
 
