@@ -47,10 +47,16 @@ export default function Slideshow() {
   return (
     <div className="h-screen w-screen bg-black flex items-center justify-center">
       <img
-        src={gerarURL(fotos[indiceAtual].name)}
-        alt={`Foto ${indiceAtual + 1}`}
-        className="max-h-full max-w-full object-contain transition-all duration-1000"
-      />
+  src={gerarURL(fotos[indiceAtual].name)}
+  alt={`Foto ${indiceAtual + 1}`}
+  style={{
+    maxWidth: "100%",
+    maxHeight: "90vh",
+    objectFit: "contain",
+    transition: "all 1s"
+  }}
+/>
+
     </div>
   );
 }
