@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import UploadFoto from "./UploadFoto";
 import Galeria from "./Galeria";
 import Slideshow from "./Slideshow"; // vamos criar esse a seguir
+import ApagarFotos from "./ApagarFotos";
+import ApagarFotosPage from "./ApagarFotosPage";
+
 
 function App() {
   return (
@@ -23,6 +26,8 @@ function App() {
         } />
         <Route path="/galeria" element={<Galeria />} />
         <Route path="/slideshow" element={<Slideshow />} />
+        <Route path="/apagar" element={<ApagarFotosPage />} />
+
       </Routes>
     </Router>
   );
