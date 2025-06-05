@@ -15,8 +15,6 @@ export default function Galeria() {
         console.error("Erro ao listar fotos:", error.message);
       } else {
         setFotos(data);
-        console.log("Fotos carregadas:", data);
-
       }
     }
 
@@ -28,22 +26,28 @@ export default function Galeria() {
   }
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h2>🎞️ Galeria do Arraiá</h2>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
-        {fotos.map((foto) => (
-          <div key={foto.name} style={{ width: "200px", textAlign: "center" }}>
-            <img
-              src={gerarURL(foto.name)}
-              alt={foto.name}
-              style={{ width: "100%", borderRadius: "8px" }}
-            />
-            <a href={gerarURL(foto.name)} download>
-              📥 Baixar
-            </a>
-          </div>
-        ))}
-      </div>
+  <div style={{ padding: "1rem" }}>
+    <h2 style={{ textAlign: "center", marginBottom: "1rem" }}>🎞️ Galeria do Arraiá</h2>
+    <div style={{
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "1rem",
+      justifyContent: "center"
+    }}>
+      {fotos.map((foto) => (
+        <div key={foto.name} style={{ width: "45%", maxWidth: "200px", textAlign: "center" }}>
+          <img
+            src={gerarURL(foto.name)}
+            alt={foto.name}
+            style={{ width: "100%", borderRadius: "8px" }}
+          />
+          <a href={gerarURL(foto.name)} download style={{ display: "block", marginTop: "0.5rem" }}>
+            📥 Baixar
+          </a>
+        </div>
+      ))}
     </div>
-  );
+  </div>
+);
+
 }

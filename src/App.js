@@ -1,14 +1,30 @@
+// src/App.js
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import UploadFoto from "./UploadFoto";
 import Galeria from "./Galeria";
+import Slideshow from "./Slideshow"; // vamos criar esse a seguir
 
 function App() {
   return (
-    <div>
-      <h1 style={{ textAlign: "center" }}>🎉 Arraiá 2025</h1>
-      <UploadFoto />
-      <hr />
-      <Galeria />
-    </div>
+    <Router>
+      <nav style={{ textAlign: "center", margin: "1rem" }}>
+        <Link to="/" style={{ marginRight: "1rem" }}>📷 Enviar Fotos</Link>
+                <Link to="/galeria" style={{ marginRight: "1rem", fontWeight: "bold", fontSize: "1.2rem" }}>📸 Ver Fotos</Link>
+
+        <Link to="/slideshow">📺 Modo TV</Link>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={
+          <div style={{ textAlign: "center" }}>
+            <h1>🎉 Arraiá 2025</h1>
+            <UploadFoto />
+          </div>
+        } />
+        <Route path="/galeria" element={<Galeria />} />
+        <Route path="/slideshow" element={<Slideshow />} />
+      </Routes>
+    </Router>
   );
 }
 
