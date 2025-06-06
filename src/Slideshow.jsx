@@ -5,22 +5,37 @@ import { supabase } from "./supabaseClient";
 export default function Slideshow() {
   const [fotos, setFotos] = useState([]);
   const [indiceAtual, setIndiceAtual] = useState(0);
+  const [pausado, setPausado] = useState(false);
+  const [telaCheia, setTelaCheia] = useState(false);
+
+
   const nomesAnteriores = useRef([]);
+  const estiloBotao = {
+  padding: "10px 16px",
+  background: "#fff",
+  color: "#000",
+  border: "none",
+  borderRadius: "8px",
+  fontSize: "1rem",
+  cursor: "pointer",
+};
+
 
   function gerarURL(nomeArquivo) {
     return `https://ecfhihpyvludqozrapfi.supabase.co/storage/v1/object/public/fotos-arraia/${nomeArquivo}`;
   }
 
   // ⏱️ Loop automático a cada 5 segundos
-  useEffect(() => {
-    if (fotos.length === 0) return;
+useEffect(() => {
+  if (fotos.length === 0 || pausado) return;
 
-    const intervalo = setInterval(() => {
-      setIndiceAtual((prev) => (prev + 1) % fotos.length);
-    }, 5000);
+  const intervalo = setInterval(() => {
+    setIndiceAtual((prev) => (prev + 1) % fotos.length);
+  }, 5000);
 
-    return () => clearInterval(intervalo);
-  }, [fotos]);
+  return () => clearInterval(intervalo);
+}, [fotos, pausado]);
+
 
   // 🔄 Atualiza a lista de fotos a cada 10 segundos
   useEffect(() => {
@@ -29,9 +44,7 @@ export default function Slideshow() {
         .from("fotos-arraia")
         .list("", {
           limit: 1000,
-          sortBy: { column: "created_at", order: "desc" }
-,
-          
+          sortBy: { column: "created_at", order: "desc" },
         });
 
       if (error) {
@@ -50,7 +63,6 @@ export default function Slideshow() {
         nomesAnteriores.current = novosNomes;
         setFotos(data);
         setIndiceAtual(0);
-
       }
     }
 
@@ -59,6 +71,16 @@ export default function Slideshow() {
 
     return () => clearInterval(intervalo);
   }, []);
+  useEffect(() => {
+  function aoMudarFullscreen() {
+    const estaFullscreen = document.fullscreenElement != null;
+    setTelaCheia(estaFullscreen);
+  }
+
+  document.addEventListener("fullscreenchange", aoMudarFullscreen);
+  return () => document.removeEventListener("fullscreenchange", aoMudarFullscreen);
+}, []);
+
 
   if (fotos.length === 0) {
     return (
@@ -68,26 +90,98 @@ export default function Slideshow() {
     );
   }
 
-  return (
-    <div style={{
+
+
+ return (
+  <div
+    style={{
       height: "100vh",
       width: "100vw",
       backgroundColor: "black",
       display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between",
       alignItems: "center",
-      justifyContent: "center",
-      overflow: "hidden"
-    }}>
-      <img
-        src={gerarURL(fotos[indiceAtual].name)}
-        alt={`Foto ${indiceAtual + 1}`}
-        style={{
-          maxHeight: "100%",
-          maxWidth: "100%",
-          objectFit: "contain",
-          transition: "all 1s ease-in-out"
-        }}
-      />
+    }}
+  >
+    {/* Imagem ocupando o centro */}
+ <div
+  style={{
+    height: "calc(100vh - 120px)", // espaço para deixar os botões e o contador visíveis
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  }}
+>
+  <img
+    src={gerarURL(fotos[indiceAtual].name)}
+    alt={`Foto ${indiceAtual + 1}`}
+    style={{
+      maxHeight: "100%",
+      maxWidth: "100%",
+      objectFit: "contain",
+      transition: "all 1s ease-in-out",
+    }}
+  />
+</div>
+
+
+    {/* Contador */}
+    <div
+      style={{
+        color: "white",
+        fontSize: "1.2rem",
+        fontFamily: "monospace",
+        marginBottom: "4px",
+      }}
+    >
+      📸 Mostrando {indiceAtual + 1} / {fotos.length}
     </div>
-  );
+
+    {/* Botões fora da imagem */}
+    <div
+      style={{
+        display: "flex",
+        gap: "12px",
+        justifyContent: "center",
+        marginBottom: "20px",
+      }}
+    >
+      <button
+        onClick={() => setIndiceAtual((prev) => (prev - 1 + fotos.length) % fotos.length)}
+        style={estiloBotao}
+      >
+        ⬅️ Voltar
+      </button>
+      <button
+        onClick={() => setPausado((prev) => !prev)}
+        style={estiloBotao}
+      >
+        {pausado ? "▶️ Retomar" : "⏸️ Pausar"}
+      </button>
+      <button
+        onClick={() => setIndiceAtual((prev) => (prev + 1) % fotos.length)}
+        style={estiloBotao}
+      >
+        Avançar ➡️
+      </button>
+<button
+  onClick={() => {
+    const el = document.documentElement;
+    if (!telaCheia && el.requestFullscreen) {
+      el.requestFullscreen();
+    } else if (telaCheia && document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }}
+  style={estiloBotao}
+>
+  {telaCheia ? "❌ Sair Tela Cheia" : "🖥️ Tela Cheia"}
+</button>
+
+
+    </div>
+  </div>
+);
+
 }
