@@ -8,6 +8,8 @@ export default function Slideshow() {
   const [indiceAtual, setIndiceAtual] = useState(0);
   const [pausado, setPausado] = useState(false);
   const [telaCheia, setTelaCheia] = useState(false);
+  const [imagemCarregou, setImagemCarregou] = useState(false);
+
   const nomesAnteriores = useRef([]);
   const navigate = useNavigate();
 
@@ -21,14 +23,17 @@ export default function Slideshow() {
     cursor: "pointer",
   };
 
-  function gerarURL(nomeArquivo) {
-    return `https://ecfhihpyvludqozrapfi.supabase.co/storage/v1/object/public/fotos-arraia/${nomeArquivo}`;
-  }
+ function gerarURL(nomeArquivo) {
+  return `https://ecfhihpyvludqozrapfi.supabase.co/storage/v1/object/public/fotos-arraia/${nomeArquivo}?width=1280&quality=70`;
+}
+
 
   useEffect(() => {
     if (fotos.length === 0 || pausado) return;
     const intervalo = setInterval(() => {
       setIndiceAtual((prev) => (prev + 1) % fotos.length);
+      setImagemCarregou(false);
+
     }, 5000);
     return () => clearInterval(intervalo);
   }, [fotos, pausado]);
@@ -105,16 +110,30 @@ export default function Slideshow() {
           justifyContent: "center",
         }}
       >
-        <img
-          src={gerarURL(fotos[indiceAtual].name)}
-          alt={`Foto ${indiceAtual + 1}`}
-          style={{
-            maxHeight: "100%",
-            maxWidth: "100%",
-            objectFit: "contain",
-            transition: "all 1s ease-in-out",
-          }}
-        />
+        {!imagemCarregou && (
+  <div style={{
+    position: "absolute",
+    color: "white",
+    fontSize: "1.5rem",
+    fontFamily: "sans-serif"
+  }}>
+    Carregando imagem...
+  </div>
+)}
+
+       <img
+  src={gerarURL(fotos[indiceAtual].name)}
+  alt={`Foto ${indiceAtual + 1}`}
+  onLoad={() => setImagemCarregou(true)}
+  style={{
+    maxHeight: "100%",
+    maxWidth: "100%",
+    objectFit: "contain",
+    transition: "all 1s ease-in-out",
+    opacity: imagemCarregou ? 1 : 0,
+  }}
+/>
+
       </div>
 
       {/* Contador */}

@@ -11,8 +11,7 @@ export default function ApagarFotosPage() {
       const { data, error } = await supabase.storage
         .from("fotos-arraia")
         .list("", {
-          limit: 100,
-          sortBy: { column: "created_at", order: "desc" }
+        sortBy: { column: "created_at", order: "desc" }
         });
 
       if (error) {
@@ -60,13 +59,14 @@ export default function ApagarFotosPage() {
       
       setSelecionadas([]);
       // Atualiza lista de fotos após deletar
-const { data: novasFotos } = await supabase.storage
-  .from("fotos-arraia")
-  .list("", {
-    limit: 1000,
-    sortBy: { column: "created_at", order: "desc" },
-  });
-setFotos(novasFotos || []);
+    const { data, error } = await supabase.storage
+      .from("fotos-arraia")
+      .list("", {
+        sortBy: { column: "created_at", order: "desc" },
+      });
+
+setFotos(data || []);
+
 
     }
   }
